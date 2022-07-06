@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
 package protobuf;
 option  go_package = "./;protobufpb";
 
@@ -114,6 +115,10 @@ message GrantRoleReq {
     string account = 3;
 }
 
+message CreateUserReq {
+    string PublicAddress = 1;
+}
+
 service UserSvc {
     rpc Authenticate(AuthenticateReq) returns (UserRes);
     rpc GetUser(GetUserReq) returns (UserRes);
@@ -128,4 +133,5 @@ service UserSvc {
     rpc AdminTransferNft(TransferNftReq) returns (TxnRes);
     rpc AdminTransferToken(TransferTokenReq) returns (TxnRes);
     rpc AdminGrantRole(GrantRoleReq) returns (TxnRes);
+    rpc CreateUser(CreateUserReq) returns (google.protobuf.Empty);
 }

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package protobuf;
+option  go_package = "./;protobufpb";
+
+
+message CreateLuckyVaultReq {
+    string TxnHash = 1;
+    string Purchaser = 2;
+    optional string Busd = 3;
+    string Kfive = 4;
+    string RewardAmount = 5;
+    int64 Timestamp = 6;
+    string Address = 7;
+    int64 Type = 8;
+}
+
+service MagicboxSvc {
+    rpc CreateLuckyVault(CreateLuckyVaultReq) returns (google.protobuf.Empty);
+}

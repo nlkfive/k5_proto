@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package protobuf;
+option  go_package = "./;protobufpb";
+
+message TransferErc20Req {
+    string TxnHash = 1;
+    string From = 2;
+    string To = 3;
+    string Value = 4;
+    string Address = 6;
+    int64 Timestamp = 7;
+}
+
+message TransferErc721Req {
+    string TxnHash = 1;
+    string From = 2;
+    string To = 3;
+    string TokenId = 4;
+    string Address = 6;
+    int64 Timestamp = 7;
+    string Cid = 8;
+    string Data = 9;
+}
+
+service TokenSvc {
+    rpc TransferErc721(TransferErc721Req) returns (google.protobuf.Empty);
+    rpc TransferErc20(TransferErc20Req) returns (google.protobuf.Empty);
+}
