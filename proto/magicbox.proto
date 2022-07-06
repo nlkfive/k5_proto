@@ -5,7 +5,6 @@ import "google/protobuf/empty.proto";
 package protobuf;
 option  go_package = "./;protobufpb";
 
-
 message CreateLuckyVaultReq {
     string TxnHash = 1;
     string Purchaser = 2;
@@ -17,6 +16,22 @@ message CreateLuckyVaultReq {
     int64 Type = 8;
 }
 
+message CreateMagicboxReq {
+    string AddedTxnHash = 1;
+    string AssetId = 2;
+    uint32 BoxType = 3;
+    int64 Timestamp = 4;
+}
+
+message UpdateReceiverMagicboxReq {
+    string AssetId = 1;
+    string Owner = 2;
+    int64 ReceivedAt = 3;
+    string ReceivedTxnHash = 5;
+}
+
 service MagicboxSvc {
     rpc CreateLuckyVault(CreateLuckyVaultReq) returns (google.protobuf.Empty);
+    rpc CreateMagicbox(CreateMagicboxReq) returns (google.protobuf.Empty);
+    rpc UpdateReceiverMagicbox(UpdateReceiverMagicboxReq) returns (google.protobuf.Empty);
 }
