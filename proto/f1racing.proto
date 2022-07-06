@@ -44,6 +44,17 @@ message RaceRegisteredReq {
     uint32 Slot = 4;
     int64 Timestamp = 5;
 }
+message GetTournamentAddressListRes {
+    repeated string TournamentAddressList = 1;
+}
+
+message CheckTournamentAddressExistsReq {
+    string TournamentAddress = 1;
+}
+
+message CheckTournamentAddressExistsRes {
+    bool IsExists = 1;
+}
 
 service F1racingSvc {
     rpc RaceCreate(RaceCreateReq) returns (google.protobuf.Empty);
@@ -51,4 +62,6 @@ service F1racingSvc {
     rpc RaceCancelled(RaceCancelledReq) returns (google.protobuf.Empty);
     rpc RewardGranted(RewardGrantedReq) returns (google.protobuf.Empty);
     rpc RaceRegistered(RaceRegisteredReq) returns (google.protobuf.Empty);
+    rpc GetTournamentAddressList(google.protobuf.Empty) returns (GetTournamentAddressListRes);
+    rpc CheckTournamentAddressExists(CheckTournamentAddressExistsReq) returns (CheckTournamentAddressExistsRes);
 }

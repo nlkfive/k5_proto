@@ -28,6 +28,8 @@ type F1RacingSvcClient interface {
 	RaceCancelled(ctx context.Context, in *RaceCancelledReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	RewardGranted(ctx context.Context, in *RewardGrantedReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	RaceRegistered(ctx context.Context, in *RaceRegisteredReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetTournamentAddressList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetTournamentAddressListRes, error)
+	CheckTournamentAddressExists(ctx context.Context, in *CheckTournamentAddressExistsReq, opts ...grpc.CallOption) (*CheckTournamentAddressExistsRes, error)
 }
 
 type f1RacingSvcClient struct {
@@ -83,6 +85,24 @@ func (c *f1RacingSvcClient) RaceRegistered(ctx context.Context, in *RaceRegister
 	return out, nil
 }
 
+func (c *f1RacingSvcClient) GetTournamentAddressList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetTournamentAddressListRes, error) {
+	out := new(GetTournamentAddressListRes)
+	err := c.cc.Invoke(ctx, "/protobuf.F1racingSvc/GetTournamentAddressList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *f1RacingSvcClient) CheckTournamentAddressExists(ctx context.Context, in *CheckTournamentAddressExistsReq, opts ...grpc.CallOption) (*CheckTournamentAddressExistsRes, error) {
+	out := new(CheckTournamentAddressExistsRes)
+	err := c.cc.Invoke(ctx, "/protobuf.F1racingSvc/CheckTournamentAddressExists", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // F1RacingSvcServer is the server API for F1RacingSvc service.
 // All implementations must embed UnimplementedF1RacingSvcServer
 // for forward compatibility
@@ -92,6 +112,8 @@ type F1RacingSvcServer interface {
 	RaceCancelled(context.Context, *RaceCancelledReq) (*emptypb.Empty, error)
 	RewardGranted(context.Context, *RewardGrantedReq) (*emptypb.Empty, error)
 	RaceRegistered(context.Context, *RaceRegisteredReq) (*emptypb.Empty, error)
+	GetTournamentAddressList(context.Context, *emptypb.Empty) (*GetTournamentAddressListRes, error)
+	CheckTournamentAddressExists(context.Context, *CheckTournamentAddressExistsReq) (*CheckTournamentAddressExistsRes, error)
 	mustEmbedUnimplementedF1RacingSvcServer()
 }
 
@@ -113,6 +135,12 @@ func (UnimplementedF1RacingSvcServer) RewardGranted(context.Context, *RewardGran
 }
 func (UnimplementedF1RacingSvcServer) RaceRegistered(context.Context, *RaceRegisteredReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RaceRegistered not implemented")
+}
+func (UnimplementedF1RacingSvcServer) GetTournamentAddressList(context.Context, *emptypb.Empty) (*GetTournamentAddressListRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTournamentAddressList not implemented")
+}
+func (UnimplementedF1RacingSvcServer) CheckTournamentAddressExists(context.Context, *CheckTournamentAddressExistsReq) (*CheckTournamentAddressExistsRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckTournamentAddressExists not implemented")
 }
 func (UnimplementedF1RacingSvcServer) mustEmbedUnimplementedF1RacingSvcServer() {}
 
@@ -217,6 +245,42 @@ func _F1RacingSvc_RaceRegistered_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _F1RacingSvc_GetTournamentAddressList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(F1RacingSvcServer).GetTournamentAddressList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.F1racingSvc/GetTournamentAddressList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(F1RacingSvcServer).GetTournamentAddressList(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _F1RacingSvc_CheckTournamentAddressExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckTournamentAddressExistsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(F1RacingSvcServer).CheckTournamentAddressExists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.F1racingSvc/CheckTournamentAddressExists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(F1RacingSvcServer).CheckTournamentAddressExists(ctx, req.(*CheckTournamentAddressExistsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // F1RacingSvc_ServiceDesc is the grpc.ServiceDesc for F1RacingSvc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -243,6 +307,14 @@ var F1RacingSvc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RaceRegistered",
 			Handler:    _F1RacingSvc_RaceRegistered_Handler,
+		},
+		{
+			MethodName: "GetTournamentAddressList",
+			Handler:    _F1RacingSvc_GetTournamentAddressList_Handler,
+		},
+		{
+			MethodName: "CheckTournamentAddressExists",
+			Handler:    _F1RacingSvc_CheckTournamentAddressExists_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
