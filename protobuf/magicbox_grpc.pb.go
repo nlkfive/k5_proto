@@ -24,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MagicboxSvcClient interface {
 	CreateLuckyVault(ctx context.Context, in *CreateLuckyVaultReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateMagicbox(ctx context.Context, in *CreateMagicboxReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateReceiverMagicbox(ctx context.Context, in *UpdateReceiverMagicboxReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type magicboxSvcClient struct {
@@ -43,11 +45,31 @@ func (c *magicboxSvcClient) CreateLuckyVault(ctx context.Context, in *CreateLuck
 	return out, nil
 }
 
+func (c *magicboxSvcClient) CreateMagicbox(ctx context.Context, in *CreateMagicboxReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MagicboxSvc/CreateMagicbox", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *magicboxSvcClient) UpdateReceiverMagicbox(ctx context.Context, in *UpdateReceiverMagicboxReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MagicboxSvc/UpdateReceiverMagicbox", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MagicboxSvcServer is the server API for MagicboxSvc service.
 // All implementations must embed UnimplementedMagicboxSvcServer
 // for forward compatibility
 type MagicboxSvcServer interface {
 	CreateLuckyVault(context.Context, *CreateLuckyVaultReq) (*emptypb.Empty, error)
+	CreateMagicbox(context.Context, *CreateMagicboxReq) (*emptypb.Empty, error)
+	UpdateReceiverMagicbox(context.Context, *UpdateReceiverMagicboxReq) (*emptypb.Empty, error)
 	mustEmbedUnimplementedMagicboxSvcServer()
 }
 
@@ -57,6 +79,12 @@ type UnimplementedMagicboxSvcServer struct {
 
 func (UnimplementedMagicboxSvcServer) CreateLuckyVault(context.Context, *CreateLuckyVaultReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateLuckyVault not implemented")
+}
+func (UnimplementedMagicboxSvcServer) CreateMagicbox(context.Context, *CreateMagicboxReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMagicbox not implemented")
+}
+func (UnimplementedMagicboxSvcServer) UpdateReceiverMagicbox(context.Context, *UpdateReceiverMagicboxReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateReceiverMagicbox not implemented")
 }
 func (UnimplementedMagicboxSvcServer) mustEmbedUnimplementedMagicboxSvcServer() {}
 
@@ -89,6 +117,42 @@ func _MagicboxSvc_CreateLuckyVault_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MagicboxSvc_CreateMagicbox_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMagicboxReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MagicboxSvcServer).CreateMagicbox(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MagicboxSvc/CreateMagicbox",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MagicboxSvcServer).CreateMagicbox(ctx, req.(*CreateMagicboxReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MagicboxSvc_UpdateReceiverMagicbox_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateReceiverMagicboxReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MagicboxSvcServer).UpdateReceiverMagicbox(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MagicboxSvc/UpdateReceiverMagicbox",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MagicboxSvcServer).UpdateReceiverMagicbox(ctx, req.(*UpdateReceiverMagicboxReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MagicboxSvc_ServiceDesc is the grpc.ServiceDesc for MagicboxSvc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -99,6 +163,14 @@ var MagicboxSvc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateLuckyVault",
 			Handler:    _MagicboxSvc_CreateLuckyVault_Handler,
+		},
+		{
+			MethodName: "CreateMagicbox",
+			Handler:    _MagicboxSvc_CreateMagicbox_Handler,
+		},
+		{
+			MethodName: "UpdateReceiverMagicbox",
+			Handler:    _MagicboxSvc_UpdateReceiverMagicbox_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

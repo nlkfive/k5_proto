@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package protobuf;
+option  go_package = "./;protobufpb";
+
+message RaceCreateReq {
+    string RaceId = 1;
+    string TxnHash = 2;
+    string TournamentAddress = 3;
+    uint32 NoSlot = 4;
+    int64 StartAt = 5;
+    uint32 RaceNo = 6;
+    int64 Timestamp = 7;
+}
+
+message RaceResultUpdatedReq {
+    string RaceId = 1;
+    string ResultTxnHash = 2;
+    int64 ResultUpdatedAt = 3;
+    string Result = 4;
+}
+
+message RaceCancelledReq {
+    string RaceId = 1;
+    string CancelTxnHash = 2;
+    int64 CancelledAt = 3;
+}
+
+message RewardGrantedReq {
+    string TxnHash = 1;
+    string WinnerAddress = 2;
+    int64 WinnerIndex = 3;
+    string TournamentAddress = 4;
+    string AssetId = 5;
+    int64 Timestamp = 6;
+}
+
+message RaceRegisteredReq {
+    string TxnHash = 1;
+    string RaceId = 2;
+    string ParticipantAddress = 3;
+    uint32 Slot = 4;
+    int64 Timestamp = 5;
+}
+message GetTournamentAddressListRes {
+    repeated string TournamentAddressList = 1;
+}
+
+message CheckTournamentAddressExistsReq {
+    string TournamentAddress = 1;
+}
+
+message CheckTournamentAddressExistsRes {
+    bool IsExists = 1;
+}
+
+service F1racingSvc {
+    rpc RaceCreate(RaceCreateReq) returns (google.protobuf.Empty);
+    rpc RaceResultUpdated(RaceResultUpdatedReq) returns (google.protobuf.Empty);
+    rpc RaceCancelled(RaceCancelledReq) returns (google.protobuf.Empty);
+    rpc RewardGranted(RewardGrantedReq) returns (google.protobuf.Empty);
+    rpc RaceRegistered(RaceRegisteredReq) returns (google.protobuf.Empty);
+    rpc GetTournamentAddressList(google.protobuf.Empty) returns (GetTournamentAddressListRes);
+    rpc CheckTournamentAddressExists(CheckTournamentAddressExistsReq) returns (CheckTournamentAddressExistsRes);
+}
