@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.2
-// source: k5_proto/proto/mkp.proto
+// source: proto/mkp.proto
 
 package protobufpb
 
@@ -23,6 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MkpSvcClient interface {
+	TransferErc721(ctx context.Context, in *TransferErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	TransferErc20(ctx context.Context, in *TransferErc20Req, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateAuction(ctx context.Context, in *CreateAuctionReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateAuction(ctx context.Context, in *UpdateAuctionReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CancelAuction(ctx context.Context, in *CancelAuctionReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -41,6 +43,24 @@ type mkpSvcClient struct {
 
 func NewMkpSvcClient(cc grpc.ClientConnInterface) MkpSvcClient {
 	return &mkpSvcClient{cc}
+}
+
+func (c *mkpSvcClient) TransferErc721(ctx context.Context, in *TransferErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/TransferErc721", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mkpSvcClient) TransferErc20(ctx context.Context, in *TransferErc20Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/TransferErc20", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *mkpSvcClient) CreateAuction(ctx context.Context, in *CreateAuctionReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
@@ -137,6 +157,8 @@ func (c *mkpSvcClient) CreateOrUpdateNft(ctx context.Context, in *CreateOrUpdate
 // All implementations must embed UnimplementedMkpSvcServer
 // for forward compatibility
 type MkpSvcServer interface {
+	TransferErc721(context.Context, *TransferErc721Req) (*emptypb.Empty, error)
+	TransferErc20(context.Context, *TransferErc20Req) (*emptypb.Empty, error)
 	CreateAuction(context.Context, *CreateAuctionReq) (*emptypb.Empty, error)
 	UpdateAuction(context.Context, *UpdateAuctionReq) (*emptypb.Empty, error)
 	CancelAuction(context.Context, *CancelAuctionReq) (*emptypb.Empty, error)
@@ -154,6 +176,12 @@ type MkpSvcServer interface {
 type UnimplementedMkpSvcServer struct {
 }
 
+func (UnimplementedMkpSvcServer) TransferErc721(context.Context, *TransferErc721Req) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TransferErc721 not implemented")
+}
+func (UnimplementedMkpSvcServer) TransferErc20(context.Context, *TransferErc20Req) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TransferErc20 not implemented")
+}
 func (UnimplementedMkpSvcServer) CreateAuction(context.Context, *CreateAuctionReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAuction not implemented")
 }
@@ -195,6 +223,42 @@ type UnsafeMkpSvcServer interface {
 
 func RegisterMkpSvcServer(s grpc.ServiceRegistrar, srv MkpSvcServer) {
 	s.RegisterService(&MkpSvc_ServiceDesc, srv)
+}
+
+func _MkpSvc_TransferErc721_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TransferErc721Req)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).TransferErc721(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/TransferErc721",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).TransferErc721(ctx, req.(*TransferErc721Req))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_TransferErc20_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TransferErc20Req)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).TransferErc20(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/TransferErc20",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).TransferErc20(ctx, req.(*TransferErc20Req))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _MkpSvc_CreateAuction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -385,6 +449,14 @@ var MkpSvc_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MkpSvcServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "TransferErc721",
+			Handler:    _MkpSvc_TransferErc721_Handler,
+		},
+		{
+			MethodName: "TransferErc20",
+			Handler:    _MkpSvc_TransferErc20_Handler,
+		},
+		{
 			MethodName: "CreateAuction",
 			Handler:    _MkpSvc_CreateAuction_Handler,
 		},
@@ -426,5 +498,5 @@ var MkpSvc_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "k5_proto/proto/mkp.proto",
+	Metadata: "proto/mkp.proto",
 }

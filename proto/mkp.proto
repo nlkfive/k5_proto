@@ -95,7 +95,30 @@ message CreateOrUpdateNftReq {
     string NftName = 7;
 }
 
+
+message TransferErc20Req {
+    string TxnHash = 1;
+    string From = 2;
+    string To = 3;
+    string Value = 4;
+    string Address = 6;
+    int64 Timestamp = 7;
+}
+
+message TransferErc721Req {
+    string TxnHash = 1;
+    string From = 2;
+    string To = 3;
+    string TokenId = 4;
+    string Address = 6;
+    int64 Timestamp = 7;
+    string Cid = 8;
+    string Data = 9;
+}
+
 service MkpSvc {
+    rpc TransferErc721(TransferErc721Req) returns (google.protobuf.Empty);
+    rpc TransferErc20(TransferErc20Req) returns (google.protobuf.Empty);
     rpc CreateAuction(CreateAuctionReq) returns (google.protobuf.Empty);
     rpc UpdateAuction(UpdateAuctionReq) returns (google.protobuf.Empty);
     rpc CancelAuction(CancelAuctionReq) returns (google.protobuf.Empty);
