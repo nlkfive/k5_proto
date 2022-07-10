@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package protobuf;
+option  go_package = "./;protobufpb";
+
+message PublishNFTDataViaIPFSReq {
+    string JsonString = 1;
+}
+
+message PublishFileToIPFSReq {
+    bytes data = 1;
+}
+
+message PublishToIPFSRes {
+    bytes FileBytes = 1;
+}
+
+service IpfsSvc {
+    rpc PublishNFTDataViaIPFS(PublishNFTDataViaIPFSReq) returns (PublishToIPFSRes);
+    rpc PublishFileToIPFS(PublishFileToIPFSReq) returns (PublishToIPFSRes);
+}
