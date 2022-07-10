@@ -4,15 +4,15 @@ package protobuf;
 option  go_package = "./;protobufpb";
 
 message PublishNFTDataViaIPFSReq {
-    string JsonString = 1;
+    bytes JsonString = 1;
 }
 
 message PublishFileToIPFSReq {
-    bytes data = 1;
+    bytes FileBytes = 1;
 }
 
 message PublishToIPFSRes {
-    bytes FileBytes = 1;
+    string CID = 1;
 }
 
 service IpfsSvc {
