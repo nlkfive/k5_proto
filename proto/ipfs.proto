@@ -9,7 +9,7 @@ message PublishNFTDataViaIPFSReq {
 
 message PublishFileToIPFSReq {
     bytes FileBytes = 1;
-    string FileExtension = 2;
+    string FileName = 2;
 }
 
 message PublishToIPFSRes {
