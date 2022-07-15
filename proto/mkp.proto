@@ -116,17 +116,85 @@ message TransferErc721Req {
     string Data = 9;
 }
 
+message AuctionCreateReq {
+    string TxnHash = 1;
+    string AssetOwner = 2;
+    string NftAddress = 3;
+    string AuctionId = 4;
+    string AssetId = 5;
+    int64 StartTime = 6;
+    int64 BiddingEnd = 7;
+    string StartPriceInWei = 8;
+    optional int64 RevealEnd = 9;
+    optional string MinIncrement = 10;
+}
+
+message AuctionBidReq {
+    string TxnHash = 1;
+    string Sender = 2;
+    string AuctionId = 3;
+    optional string BlindedBid = 4;
+    optional string BidValue = 5;
+    optional uint64 Deposit = 6;
+}
+
+message BlindAuctionRevealReq {
+    string TxnHash = 1;
+    string Sender = 2;
+    string BlindAuctionId = 3;
+    string blindedBid = 4;
+    uint64 value = 5;
+}
+
+message AuctionRefundReq {
+    string TxnHash = 1;
+    string Bidder = 2;
+    string AuctionId = 3;
+    string Value = 4;
+}
+
+message AuctionCancelledReq {
+    string TxnHash = 1;
+    string Canceller = 2;
+    string AuctionId = 3;
+}
+
+message AuctionGrantRewardReq {
+    string TxnHash = 1;
+    string AuctionHighestBidder = 2;
+    string AuctionId = 3;
+    string AssetId = 4;
+}
+
 service MkpSvc {
+    // transfer token
     rpc TransferErc721(TransferErc721Req) returns (google.protobuf.Empty);
     rpc TransferErc20(TransferErc20Req) returns (google.protobuf.Empty);
+    // auction
     rpc CreateAuction(CreateAuctionReq) returns (google.protobuf.Empty);
     rpc UpdateAuction(UpdateAuctionReq) returns (google.protobuf.Empty);
     rpc CancelAuction(CancelAuctionReq) returns (google.protobuf.Empty);
     rpc CreateBidding(CreateBiddingReq) returns (google.protobuf.Empty);
     rpc RevealBidding(RevealBiddingReq) returns (google.protobuf.Empty);
+    // public auction
+    rpc PublicAuctionCreated(AuctionCreateReq) returns (google.protobuf.Empty);
+    rpc PublicAuctionBid(AuctionBidReq) returns (google.protobuf.Empty);
+    rpc PublicAuctionRefund(AuctionRefundReq) returns (google.protobuf.Empty);
+    rpc PublicAuctionCancelled(AuctionCancelledReq) returns (google.protobuf.Empty);
+    rpc PublicAuctionGrantReward(AuctionGrantRewardReq) returns (google.protobuf.Empty);
+    // blind auction
+    rpc BlindAuctionCreated(AuctionCreateReq) returns (google.protobuf.Empty);
+    rpc BlindAuctionBid(AuctionBidReq) returns (google.protobuf.Empty);
+    rpc BlindAuctionReveal(BlindAuctionRevealReq) returns (google.protobuf.Empty);
+    rpc BlindAuctionRefund(AuctionRefundReq) returns (google.protobuf.Empty);
+    rpc BlindAuctionCancelled(AuctionCancelledReq) returns (google.protobuf.Empty);
+    rpc BlindAuctionGrantReward(AuctionGrantRewardReq) returns (google.protobuf.Empty);
+    // order
     rpc CreateOrder(CreateOrderReq) returns (google.protobuf.Empty);
     rpc UpdateOrder(UpdateOrderReq) returns (google.protobuf.Empty);
     rpc CancelOrder(CancelOrderReq) returns (google.protobuf.Empty);
+    // transaction
     rpc CreateTransaction(CreateTransactionReq) returns (google.protobuf.Empty);
+    // nft
     rpc CreateOrUpdateNft(CreateOrUpdateNftReq) returns (google.protobuf.Empty);
 }
