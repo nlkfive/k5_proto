@@ -51,8 +51,8 @@ message RevealBiddingReq {
     int64 revealAt = 7;
 }
 
-message CreateOrderReq {
-    string orderId = 1;
+message CreateTradingReq {
+    string tradingId = 1;
     string txnHash = 2;
     string assetId = 3;
     string seller = 4;
@@ -62,15 +62,15 @@ message CreateOrderReq {
     int64 createdAt = 8;
 }
 
-message UpdateOrderReq {
-    string orderId = 1;
+message UpdateTradingReq {
+    string tradingId = 1;
     string buyer = 2;
     string executeTxnHash = 4;
     int64 tradedAt = 5;
 }
 
-message CancelOrderReq {
-    string orderId = 1;
+message CancelTradingReq {
+    string tradingId = 1;
     optional string canceller = 2;
     string cancelTxnHash = 4;
     int64 cancelledAt = 5;
@@ -189,10 +189,10 @@ service MkpSvc {
     rpc BlindAuctionRefund(AuctionRefundReq) returns (google.protobuf.Empty);
     rpc BlindAuctionCancelled(AuctionCancelledReq) returns (google.protobuf.Empty);
     rpc BlindAuctionGrantReward(AuctionGrantRewardReq) returns (google.protobuf.Empty);
-    // order
-    rpc CreateOrder(CreateOrderReq) returns (google.protobuf.Empty);
-    rpc UpdateOrder(UpdateOrderReq) returns (google.protobuf.Empty);
-    rpc CancelOrder(CancelOrderReq) returns (google.protobuf.Empty);
+    // Trading
+    rpc CreateTrading(CreateTradingReq) returns (google.protobuf.Empty);
+    rpc UpdateTrading(UpdateTradingReq) returns (google.protobuf.Empty);
+    rpc CancelTrading(CancelTradingReq) returns (google.protobuf.Empty);
     // transaction
     rpc CreateTransaction(CreateTransactionReq) returns (google.protobuf.Empty);
     // nft
