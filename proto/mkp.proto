@@ -5,51 +5,7 @@ import "google/protobuf/empty.proto";
 package protobuf;
 option  go_package = "./;protobufpb";
 
-message CreateAuctionReq {
-    string auctionId = 1;
-    string txnHash = 2;
-    string assetId = 3;
-    string seller = 4;
-    string nftAddress = 5;
-    string startPrice = 6;
-    uint64 biddingEndedAt = 7;
-    uint64 RevealEndedAt = 8;
-    int64 StartAt = 9;
-}
-
-message UpdateAuctionReq {
-    string auctionId = 1;
-    string buyer = 2;
-    string finalPrice = 3;
-    string executeTxnHash = 4;
-    int64 tradedAt = 5;
-}
-
-message CancelAuctionReq {
-    string auctionId = 1;
-    optional string canceller = 2;
-    string cancelTxnHash = 4;
-    int64 cancelledAt = 5;
-}
-
-message CreateBiddingReq {
-    string txnHash = 1;
-    string auctionId = 2;
-    string bidder = 3;
-    string blindedBid = 4;
-    int64 bidAt = 5;
-    string deposit = 6;
-}
-
-message RevealBiddingReq {
-    string auctionId = 1;
-    string blindedBid = 2;
-    string bidder = 3;
-    string revealTxnHash = 4;
-    bool fake = 5;
-    string value = 6;
-    int64 revealAt = 7;
-}
+// trading
 
 message CreateTradingReq {
     string tradingId = 1;
@@ -78,12 +34,17 @@ message CancelTradingReq {
 
 message CreateTransactionReq {
     string TxnHash = 1;
-    string From = 2;
-    string To = 3;
-    string Value = 4;
+    string SmcAddress = 2;
+    string From = 3;
+    string Action = 4;
     int64 Timestamp = 5;
-    string Address = 6;
+    optional string To = 6;
+    optional string ObjectId = 7;
+    optional string AssetId = 8;
+    optional uint64 Value = 9;
 }
+
+// token
 
 message CreateOrUpdateNftReq {
     string NftId = 1;
@@ -94,7 +55,6 @@ message CreateOrUpdateNftReq {
     int64 Timestamp = 6;
     string NftName = 7;
 }
-
 
 message TransferErc20Req {
     string TxnHash = 1;
@@ -115,6 +75,8 @@ message TransferErc721Req {
     string Cid = 8;
     string Data = 9;
 }
+
+// auction
 
 message AuctionCreateReq {
     string TxnHash = 1;
@@ -170,12 +132,6 @@ service MkpSvc {
     // transfer token
     rpc TransferErc721(TransferErc721Req) returns (google.protobuf.Empty);
     rpc TransferErc20(TransferErc20Req) returns (google.protobuf.Empty);
-    // auction
-    rpc CreateAuction(CreateAuctionReq) returns (google.protobuf.Empty);
-    rpc UpdateAuction(UpdateAuctionReq) returns (google.protobuf.Empty);
-    rpc CancelAuction(CancelAuctionReq) returns (google.protobuf.Empty);
-    rpc CreateBidding(CreateBiddingReq) returns (google.protobuf.Empty);
-    rpc RevealBidding(RevealBiddingReq) returns (google.protobuf.Empty);
     // public auction
     rpc PublicAuctionCreated(AuctionCreateReq) returns (google.protobuf.Empty);
     rpc PublicAuctionBid(AuctionBidReq) returns (google.protobuf.Empty);
