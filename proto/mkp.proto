@@ -78,11 +78,14 @@ message CancelTradingReq {
 
 message CreateTransactionReq {
     string TxnHash = 1;
-    string From = 2;
-    string To = 3;
-    string Value = 4;
+    string SmcAddress = 2;
+    string From = 3;
+    string Action = 4;
     int64 Timestamp = 5;
-    string Address = 6;
+    optional string To = 6;
+    optional string MkpId = 7;
+    optional string AssetId = 8;
+    optional uint64 Value = 9;
 }
 
 message CreateOrUpdateNftReq {
