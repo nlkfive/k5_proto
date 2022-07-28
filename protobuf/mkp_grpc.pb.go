@@ -47,6 +47,7 @@ type MkpSvcClient interface {
 	CreateTransaction(ctx context.Context, in *CreateTransactionReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// nft
 	CreateOrUpdateNft(ctx context.Context, in *CreateOrUpdateNftReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CheckNftExists(ctx context.Context, in *CheckNftExistsReq, opts ...grpc.CallOption) (*CheckNftExistsRes, error)
 }
 
 type mkpSvcClient struct {
@@ -219,6 +220,15 @@ func (c *mkpSvcClient) CreateOrUpdateNft(ctx context.Context, in *CreateOrUpdate
 	return out, nil
 }
 
+func (c *mkpSvcClient) CheckNftExists(ctx context.Context, in *CheckNftExistsReq, opts ...grpc.CallOption) (*CheckNftExistsRes, error) {
+	out := new(CheckNftExistsRes)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CheckNftExists", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MkpSvcServer is the server API for MkpSvc service.
 // All implementations must embed UnimplementedMkpSvcServer
 // for forward compatibility
@@ -247,6 +257,7 @@ type MkpSvcServer interface {
 	CreateTransaction(context.Context, *CreateTransactionReq) (*emptypb.Empty, error)
 	// nft
 	CreateOrUpdateNft(context.Context, *CreateOrUpdateNftReq) (*emptypb.Empty, error)
+	CheckNftExists(context.Context, *CheckNftExistsReq) (*CheckNftExistsRes, error)
 	mustEmbedUnimplementedMkpSvcServer()
 }
 
@@ -307,6 +318,9 @@ func (UnimplementedMkpSvcServer) CreateTransaction(context.Context, *CreateTrans
 }
 func (UnimplementedMkpSvcServer) CreateOrUpdateNft(context.Context, *CreateOrUpdateNftReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateNft not implemented")
+}
+func (UnimplementedMkpSvcServer) CheckNftExists(context.Context, *CheckNftExistsReq) (*CheckNftExistsRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckNftExists not implemented")
 }
 func (UnimplementedMkpSvcServer) mustEmbedUnimplementedMkpSvcServer() {}
 
@@ -645,6 +659,24 @@ func _MkpSvc_CreateOrUpdateNft_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MkpSvc_CheckNftExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckNftExistsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).CheckNftExists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/CheckNftExists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).CheckNftExists(ctx, req.(*CheckNftExistsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MkpSvc_ServiceDesc is the grpc.ServiceDesc for MkpSvc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -723,6 +755,10 @@ var MkpSvc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateOrUpdateNft",
 			Handler:    _MkpSvc_CreateOrUpdateNft_Handler,
+		},
+		{
+			MethodName: "CheckNftExists",
+			Handler:    _MkpSvc_CheckNftExists_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

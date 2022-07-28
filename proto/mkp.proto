@@ -128,6 +128,14 @@ message AuctionGrantRewardReq {
     string AssetId = 4;
 }
 
+message CheckNftExistsReq {
+    string NfId = 1;
+}
+
+message CheckNftExistsRes {
+    bool IsExists = 1;
+}
+
 service MkpSvc {
     // transfer token
     rpc TransferErc721(TransferErc721Req) returns (google.protobuf.Empty);
@@ -153,4 +161,5 @@ service MkpSvc {
     rpc CreateTransaction(CreateTransactionReq) returns (google.protobuf.Empty);
     // nft
     rpc CreateOrUpdateNft(CreateOrUpdateNftReq) returns (google.protobuf.Empty);
+    rpc CheckNftExists(CheckNftExistsReq) returns (CheckNftExistsRes);
 }
