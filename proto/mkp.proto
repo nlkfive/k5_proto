@@ -32,50 +32,6 @@ message CancelTradingReq {
     int64 cancelledAt = 5;
 }
 
-message CreateTransactionReq {
-    string TxnHash = 1;
-    string SmcAddress = 2;
-    string From = 3;
-    string Action = 4;
-    int64 Timestamp = 5;
-    optional string To = 6;
-    optional string ObjectId = 7;
-    optional string AssetId = 8;
-    optional uint64 Value = 9;
-}
-
-// token
-
-message CreateOrUpdateNftReq {
-    string NftId = 1;
-    string CID = 2;
-    string Data = 3;
-    string Address = 4;
-    string Owner = 5;
-    int64 Timestamp = 6;
-    string NftName = 7;
-}
-
-message TransferErc20Req {
-    string TxnHash = 1;
-    string From = 2;
-    string To = 3;
-    string Value = 4;
-    string Address = 6;
-    int64 Timestamp = 7;
-}
-
-message TransferErc721Req {
-    string TxnHash = 1;
-    string From = 2;
-    string To = 3;
-    string TokenId = 4;
-    string Address = 6;
-    int64 Timestamp = 7;
-    string Cid = 8;
-    string Data = 9;
-}
-
 // auction
 
 message AuctionCreateReq {
@@ -128,10 +84,54 @@ message AuctionGrantRewardReq {
     string AssetId = 4;
 }
 
+// non fungible token
+
+message CheckNftExistsReq {
+    string NfId = 1;
+}
+
+message CheckNftExistsRes {
+    bool IsExists = 1;
+}
+
+message HandleTransferErc721Req {
+    string TxnHash = 1;
+    string From = 2;
+    string To = 3;
+    string TokenId = 4;
+    string Address = 6;
+    int64 Timestamp = 7;
+}
+
+message HandleMintErc721Req {
+    string TxnHash = 1;
+    string NftId = 2;
+    string CID = 3;
+    string Data = 4;
+    string Address = 5;
+    string Owner = 6;
+    int64 Timestamp = 7;
+    string NftName = 8;
+}
+
+// fungible token
+
+message TransferErc20Req {
+    string TxnHash = 1;
+    string From = 2;
+    string To = 3;
+    uint64 Value = 4;
+    string Address = 6;
+    int64 Timestamp = 7;
+}
+
 service MkpSvc {
-    // transfer token
-    rpc TransferErc721(TransferErc721Req) returns (google.protobuf.Empty);
+    // fungible token
     rpc TransferErc20(TransferErc20Req) returns (google.protobuf.Empty);
+    // non fungible token
+    rpc HandleMintErc721(HandleMintErc721Req) returns (google.protobuf.Empty);
+    rpc HandleTransferErc721(HandleTransferErc721Req) returns (google.protobuf.Empty);
+    rpc CheckNftExists(CheckNftExistsReq) returns (CheckNftExistsRes);
     // public auction
     rpc PublicAuctionCreated(AuctionCreateReq) returns (google.protobuf.Empty);
     rpc PublicAuctionBid(AuctionBidReq) returns (google.protobuf.Empty);
@@ -149,8 +149,4 @@ service MkpSvc {
     rpc CreateTrading(CreateTradingReq) returns (google.protobuf.Empty);
     rpc UpdateTrading(UpdateTradingReq) returns (google.protobuf.Empty);
     rpc CancelTrading(CancelTradingReq) returns (google.protobuf.Empty);
-    // transaction
-    rpc CreateTransaction(CreateTransactionReq) returns (google.protobuf.Empty);
-    // nft
-    rpc CreateOrUpdateNft(CreateOrUpdateNftReq) returns (google.protobuf.Empty);
 }

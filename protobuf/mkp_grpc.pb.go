@@ -23,9 +23,12 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MkpSvcClient interface {
-	// transfer token
-	TransferErc721(ctx context.Context, in *TransferErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// fungible token
 	TransferErc20(ctx context.Context, in *TransferErc20Req, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// non fungible token
+	HandleMintErc721(ctx context.Context, in *HandleMintErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	HandleTransferErc721(ctx context.Context, in *HandleTransferErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CheckNftExists(ctx context.Context, in *CheckNftExistsReq, opts ...grpc.CallOption) (*CheckNftExistsRes, error)
 	// public auction
 	PublicAuctionCreated(ctx context.Context, in *AuctionCreateReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	PublicAuctionBid(ctx context.Context, in *AuctionBidReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -43,10 +46,6 @@ type MkpSvcClient interface {
 	CreateTrading(ctx context.Context, in *CreateTradingReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateTrading(ctx context.Context, in *UpdateTradingReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CancelTrading(ctx context.Context, in *CancelTradingReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// transaction
-	CreateTransaction(ctx context.Context, in *CreateTransactionReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// nft
-	CreateOrUpdateNft(ctx context.Context, in *CreateOrUpdateNftReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type mkpSvcClient struct {
@@ -57,18 +56,36 @@ func NewMkpSvcClient(cc grpc.ClientConnInterface) MkpSvcClient {
 	return &mkpSvcClient{cc}
 }
 
-func (c *mkpSvcClient) TransferErc721(ctx context.Context, in *TransferErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) TransferErc20(ctx context.Context, in *TransferErc20Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/TransferErc721", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/TransferErc20", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *mkpSvcClient) TransferErc20(ctx context.Context, in *TransferErc20Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) HandleMintErc721(ctx context.Context, in *HandleMintErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/TransferErc20", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/HandleMintErc721", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mkpSvcClient) HandleTransferErc721(ctx context.Context, in *HandleTransferErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/HandleTransferErc721", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mkpSvcClient) CheckNftExists(ctx context.Context, in *CheckNftExistsReq, opts ...grpc.CallOption) (*CheckNftExistsRes, error) {
+	out := new(CheckNftExistsRes)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CheckNftExists", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -201,31 +218,16 @@ func (c *mkpSvcClient) CancelTrading(ctx context.Context, in *CancelTradingReq, 
 	return out, nil
 }
 
-func (c *mkpSvcClient) CreateTransaction(ctx context.Context, in *CreateTransactionReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CreateTransaction", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *mkpSvcClient) CreateOrUpdateNft(ctx context.Context, in *CreateOrUpdateNftReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CreateOrUpdateNft", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // MkpSvcServer is the server API for MkpSvc service.
 // All implementations must embed UnimplementedMkpSvcServer
 // for forward compatibility
 type MkpSvcServer interface {
-	// transfer token
-	TransferErc721(context.Context, *TransferErc721Req) (*emptypb.Empty, error)
+	// fungible token
 	TransferErc20(context.Context, *TransferErc20Req) (*emptypb.Empty, error)
+	// non fungible token
+	HandleMintErc721(context.Context, *HandleMintErc721Req) (*emptypb.Empty, error)
+	HandleTransferErc721(context.Context, *HandleTransferErc721Req) (*emptypb.Empty, error)
+	CheckNftExists(context.Context, *CheckNftExistsReq) (*CheckNftExistsRes, error)
 	// public auction
 	PublicAuctionCreated(context.Context, *AuctionCreateReq) (*emptypb.Empty, error)
 	PublicAuctionBid(context.Context, *AuctionBidReq) (*emptypb.Empty, error)
@@ -243,10 +245,6 @@ type MkpSvcServer interface {
 	CreateTrading(context.Context, *CreateTradingReq) (*emptypb.Empty, error)
 	UpdateTrading(context.Context, *UpdateTradingReq) (*emptypb.Empty, error)
 	CancelTrading(context.Context, *CancelTradingReq) (*emptypb.Empty, error)
-	// transaction
-	CreateTransaction(context.Context, *CreateTransactionReq) (*emptypb.Empty, error)
-	// nft
-	CreateOrUpdateNft(context.Context, *CreateOrUpdateNftReq) (*emptypb.Empty, error)
 	mustEmbedUnimplementedMkpSvcServer()
 }
 
@@ -254,11 +252,17 @@ type MkpSvcServer interface {
 type UnimplementedMkpSvcServer struct {
 }
 
-func (UnimplementedMkpSvcServer) TransferErc721(context.Context, *TransferErc721Req) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TransferErc721 not implemented")
-}
 func (UnimplementedMkpSvcServer) TransferErc20(context.Context, *TransferErc20Req) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TransferErc20 not implemented")
+}
+func (UnimplementedMkpSvcServer) HandleMintErc721(context.Context, *HandleMintErc721Req) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HandleMintErc721 not implemented")
+}
+func (UnimplementedMkpSvcServer) HandleTransferErc721(context.Context, *HandleTransferErc721Req) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HandleTransferErc721 not implemented")
+}
+func (UnimplementedMkpSvcServer) CheckNftExists(context.Context, *CheckNftExistsReq) (*CheckNftExistsRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckNftExists not implemented")
 }
 func (UnimplementedMkpSvcServer) PublicAuctionCreated(context.Context, *AuctionCreateReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PublicAuctionCreated not implemented")
@@ -302,12 +306,6 @@ func (UnimplementedMkpSvcServer) UpdateTrading(context.Context, *UpdateTradingRe
 func (UnimplementedMkpSvcServer) CancelTrading(context.Context, *CancelTradingReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelTrading not implemented")
 }
-func (UnimplementedMkpSvcServer) CreateTransaction(context.Context, *CreateTransactionReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateTransaction not implemented")
-}
-func (UnimplementedMkpSvcServer) CreateOrUpdateNft(context.Context, *CreateOrUpdateNftReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateNft not implemented")
-}
 func (UnimplementedMkpSvcServer) mustEmbedUnimplementedMkpSvcServer() {}
 
 // UnsafeMkpSvcServer may be embedded to opt out of forward compatibility for this service.
@@ -319,24 +317,6 @@ type UnsafeMkpSvcServer interface {
 
 func RegisterMkpSvcServer(s grpc.ServiceRegistrar, srv MkpSvcServer) {
 	s.RegisterService(&MkpSvc_ServiceDesc, srv)
-}
-
-func _MkpSvc_TransferErc721_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TransferErc721Req)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MkpSvcServer).TransferErc721(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/TransferErc721",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).TransferErc721(ctx, req.(*TransferErc721Req))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _MkpSvc_TransferErc20_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -353,6 +333,60 @@ func _MkpSvc_TransferErc20_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MkpSvcServer).TransferErc20(ctx, req.(*TransferErc20Req))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_HandleMintErc721_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HandleMintErc721Req)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).HandleMintErc721(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/HandleMintErc721",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).HandleMintErc721(ctx, req.(*HandleMintErc721Req))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_HandleTransferErc721_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HandleTransferErc721Req)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).HandleTransferErc721(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/HandleTransferErc721",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).HandleTransferErc721(ctx, req.(*HandleTransferErc721Req))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_CheckNftExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckNftExistsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).CheckNftExists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/CheckNftExists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).CheckNftExists(ctx, req.(*CheckNftExistsReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -609,42 +643,6 @@ func _MkpSvc_CancelTrading_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_CreateTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateTransactionReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MkpSvcServer).CreateTransaction(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/CreateTransaction",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).CreateTransaction(ctx, req.(*CreateTransactionReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _MkpSvc_CreateOrUpdateNft_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateOrUpdateNftReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MkpSvcServer).CreateOrUpdateNft(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/CreateOrUpdateNft",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).CreateOrUpdateNft(ctx, req.(*CreateOrUpdateNftReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // MkpSvc_ServiceDesc is the grpc.ServiceDesc for MkpSvc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -653,12 +651,20 @@ var MkpSvc_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MkpSvcServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "TransferErc721",
-			Handler:    _MkpSvc_TransferErc721_Handler,
-		},
-		{
 			MethodName: "TransferErc20",
 			Handler:    _MkpSvc_TransferErc20_Handler,
+		},
+		{
+			MethodName: "HandleMintErc721",
+			Handler:    _MkpSvc_HandleMintErc721_Handler,
+		},
+		{
+			MethodName: "HandleTransferErc721",
+			Handler:    _MkpSvc_HandleTransferErc721_Handler,
+		},
+		{
+			MethodName: "CheckNftExists",
+			Handler:    _MkpSvc_CheckNftExists_Handler,
 		},
 		{
 			MethodName: "PublicAuctionCreated",
@@ -715,14 +721,6 @@ var MkpSvc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CancelTrading",
 			Handler:    _MkpSvc_CancelTrading_Handler,
-		},
-		{
-			MethodName: "CreateTransaction",
-			Handler:    _MkpSvc_CreateTransaction_Handler,
-		},
-		{
-			MethodName: "CreateOrUpdateNft",
-			Handler:    _MkpSvc_CreateOrUpdateNft_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
