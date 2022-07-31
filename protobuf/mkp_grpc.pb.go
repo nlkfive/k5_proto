@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.2
-// source: proto/mkp.proto
+// source: k5_proto/proto/mkp.proto
 
 package protobufpb
 
@@ -23,18 +23,29 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MkpSvcClient interface {
-	TransferErc721(ctx context.Context, in *TransferErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// fungible token
 	TransferErc20(ctx context.Context, in *TransferErc20Req, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CreateAuction(ctx context.Context, in *CreateAuctionReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	UpdateAuction(ctx context.Context, in *UpdateAuctionReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CancelAuction(ctx context.Context, in *CancelAuctionReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CreateBidding(ctx context.Context, in *CreateBiddingReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	RevealBidding(ctx context.Context, in *RevealBiddingReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CreateOrder(ctx context.Context, in *CreateOrderReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	UpdateOrder(ctx context.Context, in *UpdateOrderReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CancelOrder(ctx context.Context, in *CancelOrderReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CreateTransaction(ctx context.Context, in *CreateTransactionReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CreateOrUpdateNft(ctx context.Context, in *CreateOrUpdateNftReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// non fungible token
+	HandleMintErc721(ctx context.Context, in *HandleMintErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	HandleTransferErc721(ctx context.Context, in *HandleTransferErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CheckNftExists(ctx context.Context, in *CheckNftExistsReq, opts ...grpc.CallOption) (*CheckNftExistsRes, error)
+	// public auction
+	PublicAuctionCreated(ctx context.Context, in *AuctionCreateReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PublicAuctionBid(ctx context.Context, in *AuctionBidReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PublicAuctionRefund(ctx context.Context, in *AuctionRefundReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PublicAuctionCancelled(ctx context.Context, in *AuctionCancelledReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PublicAuctionGrantReward(ctx context.Context, in *AuctionGrantRewardReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// blind auction
+	BlindAuctionCreated(ctx context.Context, in *AuctionCreateReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	BlindAuctionBid(ctx context.Context, in *AuctionBidReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	BlindAuctionReveal(ctx context.Context, in *BlindAuctionRevealReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	BlindAuctionRefund(ctx context.Context, in *AuctionRefundReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	BlindAuctionCancelled(ctx context.Context, in *AuctionCancelledReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	BlindAuctionGrantReward(ctx context.Context, in *AuctionGrantRewardReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Trading
+	CreateTrading(ctx context.Context, in *CreateTradingReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateTrading(ctx context.Context, in *UpdateTradingReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CancelTrading(ctx context.Context, in *CancelTradingReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type mkpSvcClient struct {
@@ -43,15 +54,6 @@ type mkpSvcClient struct {
 
 func NewMkpSvcClient(cc grpc.ClientConnInterface) MkpSvcClient {
 	return &mkpSvcClient{cc}
-}
-
-func (c *mkpSvcClient) TransferErc721(ctx context.Context, in *TransferErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/TransferErc721", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *mkpSvcClient) TransferErc20(ctx context.Context, in *TransferErc20Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
@@ -63,90 +65,153 @@ func (c *mkpSvcClient) TransferErc20(ctx context.Context, in *TransferErc20Req, 
 	return out, nil
 }
 
-func (c *mkpSvcClient) CreateAuction(ctx context.Context, in *CreateAuctionReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) HandleMintErc721(ctx context.Context, in *HandleMintErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CreateAuction", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/HandleMintErc721", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *mkpSvcClient) UpdateAuction(ctx context.Context, in *UpdateAuctionReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) HandleTransferErc721(ctx context.Context, in *HandleTransferErc721Req, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/UpdateAuction", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/HandleTransferErc721", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *mkpSvcClient) CancelAuction(ctx context.Context, in *CancelAuctionReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CancelAuction", in, out, opts...)
+func (c *mkpSvcClient) CheckNftExists(ctx context.Context, in *CheckNftExistsReq, opts ...grpc.CallOption) (*CheckNftExistsRes, error) {
+	out := new(CheckNftExistsRes)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CheckNftExists", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *mkpSvcClient) CreateBidding(ctx context.Context, in *CreateBiddingReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) PublicAuctionCreated(ctx context.Context, in *AuctionCreateReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CreateBidding", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/PublicAuctionCreated", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *mkpSvcClient) RevealBidding(ctx context.Context, in *RevealBiddingReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) PublicAuctionBid(ctx context.Context, in *AuctionBidReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/RevealBidding", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/PublicAuctionBid", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *mkpSvcClient) CreateOrder(ctx context.Context, in *CreateOrderReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) PublicAuctionRefund(ctx context.Context, in *AuctionRefundReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CreateOrder", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/PublicAuctionRefund", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *mkpSvcClient) UpdateOrder(ctx context.Context, in *UpdateOrderReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) PublicAuctionCancelled(ctx context.Context, in *AuctionCancelledReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/UpdateOrder", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/PublicAuctionCancelled", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *mkpSvcClient) CancelOrder(ctx context.Context, in *CancelOrderReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) PublicAuctionGrantReward(ctx context.Context, in *AuctionGrantRewardReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CancelOrder", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/PublicAuctionGrantReward", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *mkpSvcClient) CreateTransaction(ctx context.Context, in *CreateTransactionReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) BlindAuctionCreated(ctx context.Context, in *AuctionCreateReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CreateTransaction", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/BlindAuctionCreated", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *mkpSvcClient) CreateOrUpdateNft(ctx context.Context, in *CreateOrUpdateNftReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *mkpSvcClient) BlindAuctionBid(ctx context.Context, in *AuctionBidReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CreateOrUpdateNft", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/BlindAuctionBid", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mkpSvcClient) BlindAuctionReveal(ctx context.Context, in *BlindAuctionRevealReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/BlindAuctionReveal", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mkpSvcClient) BlindAuctionRefund(ctx context.Context, in *AuctionRefundReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/BlindAuctionRefund", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mkpSvcClient) BlindAuctionCancelled(ctx context.Context, in *AuctionCancelledReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/BlindAuctionCancelled", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mkpSvcClient) BlindAuctionGrantReward(ctx context.Context, in *AuctionGrantRewardReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/BlindAuctionGrantReward", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mkpSvcClient) CreateTrading(ctx context.Context, in *CreateTradingReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CreateTrading", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mkpSvcClient) UpdateTrading(ctx context.Context, in *UpdateTradingReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/UpdateTrading", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mkpSvcClient) CancelTrading(ctx context.Context, in *CancelTradingReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/protobuf.MkpSvc/CancelTrading", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -157,18 +222,29 @@ func (c *mkpSvcClient) CreateOrUpdateNft(ctx context.Context, in *CreateOrUpdate
 // All implementations must embed UnimplementedMkpSvcServer
 // for forward compatibility
 type MkpSvcServer interface {
-	TransferErc721(context.Context, *TransferErc721Req) (*emptypb.Empty, error)
+	// fungible token
 	TransferErc20(context.Context, *TransferErc20Req) (*emptypb.Empty, error)
-	CreateAuction(context.Context, *CreateAuctionReq) (*emptypb.Empty, error)
-	UpdateAuction(context.Context, *UpdateAuctionReq) (*emptypb.Empty, error)
-	CancelAuction(context.Context, *CancelAuctionReq) (*emptypb.Empty, error)
-	CreateBidding(context.Context, *CreateBiddingReq) (*emptypb.Empty, error)
-	RevealBidding(context.Context, *RevealBiddingReq) (*emptypb.Empty, error)
-	CreateOrder(context.Context, *CreateOrderReq) (*emptypb.Empty, error)
-	UpdateOrder(context.Context, *UpdateOrderReq) (*emptypb.Empty, error)
-	CancelOrder(context.Context, *CancelOrderReq) (*emptypb.Empty, error)
-	CreateTransaction(context.Context, *CreateTransactionReq) (*emptypb.Empty, error)
-	CreateOrUpdateNft(context.Context, *CreateOrUpdateNftReq) (*emptypb.Empty, error)
+	// non fungible token
+	HandleMintErc721(context.Context, *HandleMintErc721Req) (*emptypb.Empty, error)
+	HandleTransferErc721(context.Context, *HandleTransferErc721Req) (*emptypb.Empty, error)
+	CheckNftExists(context.Context, *CheckNftExistsReq) (*CheckNftExistsRes, error)
+	// public auction
+	PublicAuctionCreated(context.Context, *AuctionCreateReq) (*emptypb.Empty, error)
+	PublicAuctionBid(context.Context, *AuctionBidReq) (*emptypb.Empty, error)
+	PublicAuctionRefund(context.Context, *AuctionRefundReq) (*emptypb.Empty, error)
+	PublicAuctionCancelled(context.Context, *AuctionCancelledReq) (*emptypb.Empty, error)
+	PublicAuctionGrantReward(context.Context, *AuctionGrantRewardReq) (*emptypb.Empty, error)
+	// blind auction
+	BlindAuctionCreated(context.Context, *AuctionCreateReq) (*emptypb.Empty, error)
+	BlindAuctionBid(context.Context, *AuctionBidReq) (*emptypb.Empty, error)
+	BlindAuctionReveal(context.Context, *BlindAuctionRevealReq) (*emptypb.Empty, error)
+	BlindAuctionRefund(context.Context, *AuctionRefundReq) (*emptypb.Empty, error)
+	BlindAuctionCancelled(context.Context, *AuctionCancelledReq) (*emptypb.Empty, error)
+	BlindAuctionGrantReward(context.Context, *AuctionGrantRewardReq) (*emptypb.Empty, error)
+	// Trading
+	CreateTrading(context.Context, *CreateTradingReq) (*emptypb.Empty, error)
+	UpdateTrading(context.Context, *UpdateTradingReq) (*emptypb.Empty, error)
+	CancelTrading(context.Context, *CancelTradingReq) (*emptypb.Empty, error)
 	mustEmbedUnimplementedMkpSvcServer()
 }
 
@@ -176,41 +252,59 @@ type MkpSvcServer interface {
 type UnimplementedMkpSvcServer struct {
 }
 
-func (UnimplementedMkpSvcServer) TransferErc721(context.Context, *TransferErc721Req) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TransferErc721 not implemented")
-}
 func (UnimplementedMkpSvcServer) TransferErc20(context.Context, *TransferErc20Req) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TransferErc20 not implemented")
 }
-func (UnimplementedMkpSvcServer) CreateAuction(context.Context, *CreateAuctionReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateAuction not implemented")
+func (UnimplementedMkpSvcServer) HandleMintErc721(context.Context, *HandleMintErc721Req) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HandleMintErc721 not implemented")
 }
-func (UnimplementedMkpSvcServer) UpdateAuction(context.Context, *UpdateAuctionReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateAuction not implemented")
+func (UnimplementedMkpSvcServer) HandleTransferErc721(context.Context, *HandleTransferErc721Req) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HandleTransferErc721 not implemented")
 }
-func (UnimplementedMkpSvcServer) CancelAuction(context.Context, *CancelAuctionReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CancelAuction not implemented")
+func (UnimplementedMkpSvcServer) CheckNftExists(context.Context, *CheckNftExistsReq) (*CheckNftExistsRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckNftExists not implemented")
 }
-func (UnimplementedMkpSvcServer) CreateBidding(context.Context, *CreateBiddingReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateBidding not implemented")
+func (UnimplementedMkpSvcServer) PublicAuctionCreated(context.Context, *AuctionCreateReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublicAuctionCreated not implemented")
 }
-func (UnimplementedMkpSvcServer) RevealBidding(context.Context, *RevealBiddingReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RevealBidding not implemented")
+func (UnimplementedMkpSvcServer) PublicAuctionBid(context.Context, *AuctionBidReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublicAuctionBid not implemented")
 }
-func (UnimplementedMkpSvcServer) CreateOrder(context.Context, *CreateOrderReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrder not implemented")
+func (UnimplementedMkpSvcServer) PublicAuctionRefund(context.Context, *AuctionRefundReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublicAuctionRefund not implemented")
 }
-func (UnimplementedMkpSvcServer) UpdateOrder(context.Context, *UpdateOrderReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrder not implemented")
+func (UnimplementedMkpSvcServer) PublicAuctionCancelled(context.Context, *AuctionCancelledReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublicAuctionCancelled not implemented")
 }
-func (UnimplementedMkpSvcServer) CancelOrder(context.Context, *CancelOrderReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CancelOrder not implemented")
+func (UnimplementedMkpSvcServer) PublicAuctionGrantReward(context.Context, *AuctionGrantRewardReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublicAuctionGrantReward not implemented")
 }
-func (UnimplementedMkpSvcServer) CreateTransaction(context.Context, *CreateTransactionReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateTransaction not implemented")
+func (UnimplementedMkpSvcServer) BlindAuctionCreated(context.Context, *AuctionCreateReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlindAuctionCreated not implemented")
 }
-func (UnimplementedMkpSvcServer) CreateOrUpdateNft(context.Context, *CreateOrUpdateNftReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateNft not implemented")
+func (UnimplementedMkpSvcServer) BlindAuctionBid(context.Context, *AuctionBidReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlindAuctionBid not implemented")
+}
+func (UnimplementedMkpSvcServer) BlindAuctionReveal(context.Context, *BlindAuctionRevealReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlindAuctionReveal not implemented")
+}
+func (UnimplementedMkpSvcServer) BlindAuctionRefund(context.Context, *AuctionRefundReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlindAuctionRefund not implemented")
+}
+func (UnimplementedMkpSvcServer) BlindAuctionCancelled(context.Context, *AuctionCancelledReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlindAuctionCancelled not implemented")
+}
+func (UnimplementedMkpSvcServer) BlindAuctionGrantReward(context.Context, *AuctionGrantRewardReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlindAuctionGrantReward not implemented")
+}
+func (UnimplementedMkpSvcServer) CreateTrading(context.Context, *CreateTradingReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTrading not implemented")
+}
+func (UnimplementedMkpSvcServer) UpdateTrading(context.Context, *UpdateTradingReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTrading not implemented")
+}
+func (UnimplementedMkpSvcServer) CancelTrading(context.Context, *CancelTradingReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelTrading not implemented")
 }
 func (UnimplementedMkpSvcServer) mustEmbedUnimplementedMkpSvcServer() {}
 
@@ -223,24 +317,6 @@ type UnsafeMkpSvcServer interface {
 
 func RegisterMkpSvcServer(s grpc.ServiceRegistrar, srv MkpSvcServer) {
 	s.RegisterService(&MkpSvc_ServiceDesc, srv)
-}
-
-func _MkpSvc_TransferErc721_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TransferErc721Req)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MkpSvcServer).TransferErc721(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/TransferErc721",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).TransferErc721(ctx, req.(*TransferErc721Req))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _MkpSvc_TransferErc20_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -261,182 +337,308 @@ func _MkpSvc_TransferErc20_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_CreateAuction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateAuctionReq)
+func _MkpSvc_HandleMintErc721_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HandleMintErc721Req)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MkpSvcServer).CreateAuction(ctx, in)
+		return srv.(MkpSvcServer).HandleMintErc721(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/CreateAuction",
+		FullMethod: "/protobuf.MkpSvc/HandleMintErc721",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).CreateAuction(ctx, req.(*CreateAuctionReq))
+		return srv.(MkpSvcServer).HandleMintErc721(ctx, req.(*HandleMintErc721Req))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_UpdateAuction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateAuctionReq)
+func _MkpSvc_HandleTransferErc721_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HandleTransferErc721Req)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MkpSvcServer).UpdateAuction(ctx, in)
+		return srv.(MkpSvcServer).HandleTransferErc721(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/UpdateAuction",
+		FullMethod: "/protobuf.MkpSvc/HandleTransferErc721",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).UpdateAuction(ctx, req.(*UpdateAuctionReq))
+		return srv.(MkpSvcServer).HandleTransferErc721(ctx, req.(*HandleTransferErc721Req))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_CancelAuction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CancelAuctionReq)
+func _MkpSvc_CheckNftExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckNftExistsReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MkpSvcServer).CancelAuction(ctx, in)
+		return srv.(MkpSvcServer).CheckNftExists(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/CancelAuction",
+		FullMethod: "/protobuf.MkpSvc/CheckNftExists",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).CancelAuction(ctx, req.(*CancelAuctionReq))
+		return srv.(MkpSvcServer).CheckNftExists(ctx, req.(*CheckNftExistsReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_CreateBidding_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateBiddingReq)
+func _MkpSvc_PublicAuctionCreated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuctionCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MkpSvcServer).CreateBidding(ctx, in)
+		return srv.(MkpSvcServer).PublicAuctionCreated(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/CreateBidding",
+		FullMethod: "/protobuf.MkpSvc/PublicAuctionCreated",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).CreateBidding(ctx, req.(*CreateBiddingReq))
+		return srv.(MkpSvcServer).PublicAuctionCreated(ctx, req.(*AuctionCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_RevealBidding_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RevealBiddingReq)
+func _MkpSvc_PublicAuctionBid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuctionBidReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MkpSvcServer).RevealBidding(ctx, in)
+		return srv.(MkpSvcServer).PublicAuctionBid(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/RevealBidding",
+		FullMethod: "/protobuf.MkpSvc/PublicAuctionBid",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).RevealBidding(ctx, req.(*RevealBiddingReq))
+		return srv.(MkpSvcServer).PublicAuctionBid(ctx, req.(*AuctionBidReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_CreateOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateOrderReq)
+func _MkpSvc_PublicAuctionRefund_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuctionRefundReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MkpSvcServer).CreateOrder(ctx, in)
+		return srv.(MkpSvcServer).PublicAuctionRefund(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/CreateOrder",
+		FullMethod: "/protobuf.MkpSvc/PublicAuctionRefund",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).CreateOrder(ctx, req.(*CreateOrderReq))
+		return srv.(MkpSvcServer).PublicAuctionRefund(ctx, req.(*AuctionRefundReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_UpdateOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateOrderReq)
+func _MkpSvc_PublicAuctionCancelled_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuctionCancelledReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MkpSvcServer).UpdateOrder(ctx, in)
+		return srv.(MkpSvcServer).PublicAuctionCancelled(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/UpdateOrder",
+		FullMethod: "/protobuf.MkpSvc/PublicAuctionCancelled",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).UpdateOrder(ctx, req.(*UpdateOrderReq))
+		return srv.(MkpSvcServer).PublicAuctionCancelled(ctx, req.(*AuctionCancelledReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_CancelOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CancelOrderReq)
+func _MkpSvc_PublicAuctionGrantReward_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuctionGrantRewardReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MkpSvcServer).CancelOrder(ctx, in)
+		return srv.(MkpSvcServer).PublicAuctionGrantReward(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/CancelOrder",
+		FullMethod: "/protobuf.MkpSvc/PublicAuctionGrantReward",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).CancelOrder(ctx, req.(*CancelOrderReq))
+		return srv.(MkpSvcServer).PublicAuctionGrantReward(ctx, req.(*AuctionGrantRewardReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_CreateTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateTransactionReq)
+func _MkpSvc_BlindAuctionCreated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuctionCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MkpSvcServer).CreateTransaction(ctx, in)
+		return srv.(MkpSvcServer).BlindAuctionCreated(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/CreateTransaction",
+		FullMethod: "/protobuf.MkpSvc/BlindAuctionCreated",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).CreateTransaction(ctx, req.(*CreateTransactionReq))
+		return srv.(MkpSvcServer).BlindAuctionCreated(ctx, req.(*AuctionCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MkpSvc_CreateOrUpdateNft_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateOrUpdateNftReq)
+func _MkpSvc_BlindAuctionBid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuctionBidReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MkpSvcServer).CreateOrUpdateNft(ctx, in)
+		return srv.(MkpSvcServer).BlindAuctionBid(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.MkpSvc/CreateOrUpdateNft",
+		FullMethod: "/protobuf.MkpSvc/BlindAuctionBid",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MkpSvcServer).CreateOrUpdateNft(ctx, req.(*CreateOrUpdateNftReq))
+		return srv.(MkpSvcServer).BlindAuctionBid(ctx, req.(*AuctionBidReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_BlindAuctionReveal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlindAuctionRevealReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).BlindAuctionReveal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/BlindAuctionReveal",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).BlindAuctionReveal(ctx, req.(*BlindAuctionRevealReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_BlindAuctionRefund_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuctionRefundReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).BlindAuctionRefund(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/BlindAuctionRefund",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).BlindAuctionRefund(ctx, req.(*AuctionRefundReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_BlindAuctionCancelled_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuctionCancelledReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).BlindAuctionCancelled(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/BlindAuctionCancelled",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).BlindAuctionCancelled(ctx, req.(*AuctionCancelledReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_BlindAuctionGrantReward_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuctionGrantRewardReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).BlindAuctionGrantReward(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/BlindAuctionGrantReward",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).BlindAuctionGrantReward(ctx, req.(*AuctionGrantRewardReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_CreateTrading_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTradingReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).CreateTrading(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/CreateTrading",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).CreateTrading(ctx, req.(*CreateTradingReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_UpdateTrading_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTradingReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).UpdateTrading(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/UpdateTrading",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).UpdateTrading(ctx, req.(*UpdateTradingReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MkpSvc_CancelTrading_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CancelTradingReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MkpSvcServer).CancelTrading(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.MkpSvc/CancelTrading",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MkpSvcServer).CancelTrading(ctx, req.(*CancelTradingReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -449,54 +651,78 @@ var MkpSvc_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MkpSvcServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "TransferErc721",
-			Handler:    _MkpSvc_TransferErc721_Handler,
-		},
-		{
 			MethodName: "TransferErc20",
 			Handler:    _MkpSvc_TransferErc20_Handler,
 		},
 		{
-			MethodName: "CreateAuction",
-			Handler:    _MkpSvc_CreateAuction_Handler,
+			MethodName: "HandleMintErc721",
+			Handler:    _MkpSvc_HandleMintErc721_Handler,
 		},
 		{
-			MethodName: "UpdateAuction",
-			Handler:    _MkpSvc_UpdateAuction_Handler,
+			MethodName: "HandleTransferErc721",
+			Handler:    _MkpSvc_HandleTransferErc721_Handler,
 		},
 		{
-			MethodName: "CancelAuction",
-			Handler:    _MkpSvc_CancelAuction_Handler,
+			MethodName: "CheckNftExists",
+			Handler:    _MkpSvc_CheckNftExists_Handler,
 		},
 		{
-			MethodName: "CreateBidding",
-			Handler:    _MkpSvc_CreateBidding_Handler,
+			MethodName: "PublicAuctionCreated",
+			Handler:    _MkpSvc_PublicAuctionCreated_Handler,
 		},
 		{
-			MethodName: "RevealBidding",
-			Handler:    _MkpSvc_RevealBidding_Handler,
+			MethodName: "PublicAuctionBid",
+			Handler:    _MkpSvc_PublicAuctionBid_Handler,
 		},
 		{
-			MethodName: "CreateOrder",
-			Handler:    _MkpSvc_CreateOrder_Handler,
+			MethodName: "PublicAuctionRefund",
+			Handler:    _MkpSvc_PublicAuctionRefund_Handler,
 		},
 		{
-			MethodName: "UpdateOrder",
-			Handler:    _MkpSvc_UpdateOrder_Handler,
+			MethodName: "PublicAuctionCancelled",
+			Handler:    _MkpSvc_PublicAuctionCancelled_Handler,
 		},
 		{
-			MethodName: "CancelOrder",
-			Handler:    _MkpSvc_CancelOrder_Handler,
+			MethodName: "PublicAuctionGrantReward",
+			Handler:    _MkpSvc_PublicAuctionGrantReward_Handler,
 		},
 		{
-			MethodName: "CreateTransaction",
-			Handler:    _MkpSvc_CreateTransaction_Handler,
+			MethodName: "BlindAuctionCreated",
+			Handler:    _MkpSvc_BlindAuctionCreated_Handler,
 		},
 		{
-			MethodName: "CreateOrUpdateNft",
-			Handler:    _MkpSvc_CreateOrUpdateNft_Handler,
+			MethodName: "BlindAuctionBid",
+			Handler:    _MkpSvc_BlindAuctionBid_Handler,
+		},
+		{
+			MethodName: "BlindAuctionReveal",
+			Handler:    _MkpSvc_BlindAuctionReveal_Handler,
+		},
+		{
+			MethodName: "BlindAuctionRefund",
+			Handler:    _MkpSvc_BlindAuctionRefund_Handler,
+		},
+		{
+			MethodName: "BlindAuctionCancelled",
+			Handler:    _MkpSvc_BlindAuctionCancelled_Handler,
+		},
+		{
+			MethodName: "BlindAuctionGrantReward",
+			Handler:    _MkpSvc_BlindAuctionGrantReward_Handler,
+		},
+		{
+			MethodName: "CreateTrading",
+			Handler:    _MkpSvc_CreateTrading_Handler,
+		},
+		{
+			MethodName: "UpdateTrading",
+			Handler:    _MkpSvc_UpdateTrading_Handler,
+		},
+		{
+			MethodName: "CancelTrading",
+			Handler:    _MkpSvc_CancelTrading_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/mkp.proto",
+	Metadata: "k5_proto/proto/mkp.proto",
 }

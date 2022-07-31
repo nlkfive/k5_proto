@@ -5,54 +5,10 @@ import "google/protobuf/empty.proto";
 package protobuf;
 option  go_package = "./;protobufpb";
 
-message CreateAuctionReq {
-    string auctionId = 1;
-    string txnHash = 2;
-    string assetId = 3;
-    string seller = 4;
-    string nftAddress = 5;
-    string startPrice = 6;
-    uint64 biddingEndedAt = 7;
-    uint64 RevealEndedAt = 8;
-    int64 StartAt = 9;
-}
+// trading
 
-message UpdateAuctionReq {
-    string auctionId = 1;
-    string buyer = 2;
-    string finalPrice = 3;
-    string executeTxnHash = 4;
-    int64 tradedAt = 5;
-}
-
-message CancelAuctionReq {
-    string auctionId = 1;
-    optional string canceller = 2;
-    string cancelTxnHash = 4;
-    int64 cancelledAt = 5;
-}
-
-message CreateBiddingReq {
-    string txnHash = 1;
-    string auctionId = 2;
-    string bidder = 3;
-    string blindedBid = 4;
-    int64 bidAt = 5;
-    string deposit = 6;
-}
-
-message RevealBiddingReq {
-    string auctionId = 1;
-    string blindedBid = 2;
-    string bidder = 3;
-    string revealTxnHash = 4;
-    bool fake = 5;
-    string value = 6;
-    int64 revealAt = 7;
-}
-
-message CreateOrderReq {
-    string orderId = 1;
+message CreateTradingReq {
+    string tradingId = 1;
     string txnHash = 2;
     string assetId = 3;
     string seller = 4;
@@ -62,71 +18,135 @@ message CreateOrderReq {
     int64 createdAt = 8;
 }
 
-message UpdateOrderReq {
-    string orderId = 1;
+message UpdateTradingReq {
+    string tradingId = 1;
     string buyer = 2;
     string executeTxnHash = 4;
     int64 tradedAt = 5;
 }
 
-message CancelOrderReq {
-    string orderId = 1;
+message CancelTradingReq {
+    string tradingId = 1;
     optional string canceller = 2;
     string cancelTxnHash = 4;
     int64 cancelledAt = 5;
 }
 
-message CreateTransactionReq {
+// auction
+
+message AuctionCreateReq {
     string TxnHash = 1;
-    string From = 2;
-    string To = 3;
-    string Value = 4;
-    int64 Timestamp = 5;
-    string Address = 6;
+    string AssetOwner = 2;
+    string NftAddress = 3;
+    string AuctionId = 4;
+    string AssetId = 5;
+    int64 StartTime = 6;
+    int64 BiddingEnd = 7;
+    string StartPriceInWei = 8;
+    optional int64 RevealEnd = 9;
+    optional string MinIncrement = 10;
 }
 
-message CreateOrUpdateNftReq {
-    string NftId = 1;
-    string CID = 2;
-    string Data = 3;
-    string Address = 4;
-    string Owner = 5;
-    int64 Timestamp = 6;
-    string NftName = 7;
-}
-
-
-message TransferErc20Req {
+message AuctionBidReq {
     string TxnHash = 1;
-    string From = 2;
-    string To = 3;
-    string Value = 4;
-    string Address = 6;
-    int64 Timestamp = 7;
+    string Sender = 2;
+    string AuctionId = 3;
+    optional string BlindedBid = 4;
+    optional string BidValue = 5;
+    optional uint64 Deposit = 6;
 }
 
-message TransferErc721Req {
+message BlindAuctionRevealReq {
+    string TxnHash = 1;
+    string Sender = 2;
+    string BlindAuctionId = 3;
+    string blindedBid = 4;
+    uint64 value = 5;
+}
+
+message AuctionRefundReq {
+    string TxnHash = 1;
+    string Bidder = 2;
+    string AuctionId = 3;
+    string Value = 4;
+}
+
+message AuctionCancelledReq {
+    string TxnHash = 1;
+    string Canceller = 2;
+    string AuctionId = 3;
+}
+
+message AuctionGrantRewardReq {
+    string TxnHash = 1;
+    string AuctionHighestBidder = 2;
+    string AuctionId = 3;
+    string AssetId = 4;
+}
+
+// non fungible token
+
+message CheckNftExistsReq {
+    string NfId = 1;
+}
+
+message CheckNftExistsRes {
+    bool IsExists = 1;
+}
+
+message HandleTransferErc721Req {
     string TxnHash = 1;
     string From = 2;
     string To = 3;
     string TokenId = 4;
     string Address = 6;
     int64 Timestamp = 7;
-    string Cid = 8;
-    string Data = 9;
+}
+
+message HandleMintErc721Req {
+    string TxnHash = 1;
+    string NftId = 2;
+    string CID = 3;
+    string Data = 4;
+    string Address = 5;
+    string Owner = 6;
+    int64 Timestamp = 7;
+    string NftName = 8;
+}
+
+// fungible token
+
+message TransferErc20Req {
+    string TxnHash = 1;
+    string From = 2;
+    string To = 3;
+    uint64 Value = 4;
+    string Address = 6;
+    int64 Timestamp = 7;
 }
 
 service MkpSvc {
-    rpc TransferErc721(TransferErc721Req) returns (google.protobuf.Empty);
+    // fungible token
     rpc TransferErc20(TransferErc20Req) returns (google.protobuf.Empty);
-    rpc CreateAuction(CreateAuctionReq) returns (google.protobuf.Empty);
-    rpc UpdateAuction(UpdateAuctionReq) returns (google.protobuf.Empty);
-    rpc CancelAuction(CancelAuctionReq) returns (google.protobuf.Empty);
-    rpc CreateBidding(CreateBiddingReq) returns (google.protobuf.Empty);
-    rpc RevealBidding(RevealBiddingReq) returns (google.protobuf.Empty);
-    rpc CreateOrder(CreateOrderReq) returns (google.protobuf.Empty);
-    rpc UpdateOrder(UpdateOrderReq) returns (google.protobuf.Empty);
-    rpc CancelOrder(CancelOrderReq) returns (google.protobuf.Empty);
-    rpc CreateTransaction(CreateTransactionReq) returns (google.protobuf.Empty);
-    rpc CreateOrUpdateNft(CreateOrUpdateNftReq) returns (google.protobuf.Empty);
+    // non fungible token
+    rpc HandleMintErc721(HandleMintErc721Req) returns (google.protobuf.Empty);
+    rpc HandleTransferErc721(HandleTransferErc721Req) returns (google.protobuf.Empty);
+    rpc CheckNftExists(CheckNftExistsReq) returns (CheckNftExistsRes);
+    // public auction
+    rpc PublicAuctionCreated(AuctionCreateReq) returns (google.protobuf.Empty);
+    rpc PublicAuctionBid(AuctionBidReq) returns (google.protobuf.Empty);
+    rpc PublicAuctionRefund(AuctionRefundReq) returns (google.protobuf.Empty);
+    rpc PublicAuctionCancelled(AuctionCancelledReq) returns (google.protobuf.Empty);
+    rpc PublicAuctionGrantReward(AuctionGrantRewardReq) returns (google.protobuf.Empty);
+    // blind auction
+    rpc BlindAuctionCreated(AuctionCreateReq) returns (google.protobuf.Empty);
+    rpc BlindAuctionBid(AuctionBidReq) returns (google.protobuf.Empty);
+    rpc BlindAuctionReveal(BlindAuctionRevealReq) returns (google.protobuf.Empty);
+    rpc BlindAuctionRefund(AuctionRefundReq) returns (google.protobuf.Empty);
+    rpc BlindAuctionCancelled(AuctionCancelledReq) returns (google.protobuf.Empty);
+    rpc BlindAuctionGrantReward(AuctionGrantRewardReq) returns (google.protobuf.Empty);
+    // Trading
+    rpc CreateTrading(CreateTradingReq) returns (google.protobuf.Empty);
+    rpc UpdateTrading(UpdateTradingReq) returns (google.protobuf.Empty);
+    rpc CancelTrading(CancelTradingReq) returns (google.protobuf.Empty);
 }
